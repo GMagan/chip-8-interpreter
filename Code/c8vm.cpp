@@ -25,14 +25,15 @@ void VM_ExecutarInstrucao(VM *vm){
 
    uint16_t inst = (vm->RAM[vm->PC] << 8) | vm->RAM[vm->PC + 1];
    printf(" Instrucao: 0X%04X", inst);
+   printf("\n");
    vm->PC += 2;
 
-   uint8_t grupo = inst >> 12;
-   uint8_t X     = (inst & 0x0F00) >> 8;
-   uint8_t Y     = (inst & 0x00F0) >> 4;
-   uint8_t N     = (inst & 0x000F);
-   uint8_t NN    = (inst & 0x00FF);
-   uint8_t NNN   = (inst & 0x0FFF);
+   uint8_t grupo = inst >> 12;            // Grupo (4 bits mais significativos)
+   uint8_t X     = (inst & 0x0F00) >> 8;  // Registrador X (4 bits)
+   uint8_t Y     = (inst & 0x00F0) >> 4;  // Registrador Y (4 bits)
+   uint8_t N     = (inst & 0x000F);       // Nibble (4 bits)
+   uint8_t NN    = (inst & 0x00FF);       // Byte (8 bits)
+   uint8_t NNN   = (inst & 0x0FFF);       // Endereço (12 bits)
 
    switch (grupo){
       case 0:
@@ -43,9 +44,17 @@ void VM_ExecutarInstrucao(VM *vm){
             }
             break;
          }
+      
+      case 1:
+         vm->PC = NNN;
+         break;
 
       case 6:
          vm->V[X] = NN;
+         break;
+
+      case 10:
+         vm->I = NNN;
          break;
 
       default:
