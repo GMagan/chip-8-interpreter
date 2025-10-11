@@ -1,13 +1,13 @@
 #include <stdint.h>
 
 typedef struct VM {
-   uint8_t RAM[4096];
-   uint16_t PC;
-   uint8_t V[16];
-   uint8_t SP;
-   uint16_t I;
-   uint16_t stack;
-   uint8_t DISPLAY[64 * 32];
+   uint8_t RAM[4096];         // Memória 4KB
+   uint16_t PC;               // Program Counter
+   uint8_t V[16];             // Registradores de propósito geral
+   uint8_t SP;                // Stack Pointer
+   uint16_t I;                // Registrador de índice
+   uint16_t stack;            // Pilha
+   uint8_t DISPLAY[64 * 32];  // Tela
 } VM;
 
 void VM_Inicializar(VM *vm, uint16_t pc_inicial);
