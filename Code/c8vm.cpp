@@ -35,7 +35,7 @@ void VM_ExecutarInstrucao(VM *vm){
    uint8_t NN    = (inst & 0x00FF);       // Byte (8 bits)
    uint8_t NNN   = (inst & 0x0FFF);       // Endereço (12 bits)
 
-   switch (grupo){
+   switch(grupo){
       case 0:
          //CLS
          if(inst == 0x00E0){
@@ -56,6 +56,37 @@ void VM_ExecutarInstrucao(VM *vm){
       case 10:
          vm->I = NNN;
          break;
+
+      case 13:{
+         int coordenadaX = vm->V[X] & 63;
+         int coordenadaY = vm->V[Y] & 31;
+         vm->V[15] = 0;
+
+         for(int i = 0; i < N; i++){
+            uint8_t spriteByte = vm->RAM[vm->I+i];
+            
+            if((coordenadaY + i) >= 32){
+               break;
+            }
+            for(int j = 0; j < 8; j++){
+               if((coordenadaX + j) >= 64){
+                  break;
+               }
+
+               int spritePixel = (spriteByte >> (7 - j)) & 1;
+               if(spritePixel == 0){
+                  if(vm->DISPLAY[((coordenadaY + i) * 64) + (coordenadaX + j)] == 0){
+                     vm->DISPLAY[((coordenadaY + i) * 64) + (coordenadaX + j)] = 1;
+                  } else {
+                     vm->DISPLAY[((coordenadaY + i) * 64) + (coordenadaX + j)] = 0;
+                     vm->V[15] = 1;
+                  }
+               }
+
+            }
+         }
+         break;
+      }
 
       default:
          printf(" grupo nao implementado! Instrucao: 0x%04X\n", inst);
