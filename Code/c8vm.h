@@ -6,7 +6,7 @@ typedef struct VM {
    uint8_t V[16];             // Registradores de propósito geral
    uint8_t SP;                // Stack Pointer
    uint16_t I;                // Registrador de índice
-   uint16_t stack;            // Pilha
+   uint16_t stack[16];        // Pilha
    uint8_t DISPLAY[64 * 32];  // Tela
 } VM;
 
