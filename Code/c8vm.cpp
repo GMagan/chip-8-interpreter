@@ -43,11 +43,23 @@ void VM_ExecutarInstrucao(VM *vm){
                vm->DISPLAY[i] = 0;
             }
             break;
+         } else if(inst == 0x00EE){
+            vm->SP--;
+            vm->PC = vm->stack[vm->SP];
+            break;
          }
       
       case 1:
          vm->PC = NNN;
          break;
+
+      case 2:
+         vm->stack[vm->SP] = vm->PC;
+         vm->SP++;
+         vm->PC = NNN;
+         break;
+
+      
 
       case 6:
          vm->V[X] = NN;
