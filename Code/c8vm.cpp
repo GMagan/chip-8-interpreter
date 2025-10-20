@@ -59,10 +59,12 @@ void VM_ExecutarInstrucao(VM *vm){
          vm->PC = NNN;
          break;
 
-      
-
       case 6:
          vm->V[X] = NN;
+         break;
+
+      case 7:
+         vm->V[X] += NN;
          break;
 
       case 10:
