@@ -44,9 +44,18 @@ void VM_ExecutarInstrucao(VM *vm){
             }
             break;
          } else if(inst == 0x00EE){
+            if (vm->SP == 0){
+               printf("Stack underflow!\n");
+               exit(1);
+            }
             vm->SP--;
             vm->PC = vm->stack[vm->SP];
             break;
+         } else if(inst == 0x0000){
+            break;
+         }else {
+            printf("Instrução 0x0 não reconhecida: 0x%04X\n", inst);
+            exit(1);
          }
       
       case 1:
@@ -67,11 +76,74 @@ void VM_ExecutarInstrucao(VM *vm){
          vm->V[X] += NN;
          break;
 
-      case 10:
+      case 8:
+         switch (N){
+            case 0:
+               vm->V[X] = vm->V[Y];
+               break;
+
+            case 1:
+               vm->V[X] = vm->V[X] or vm->V[Y];
+               break;
+
+            case 2:
+               vm->V[X] = vm->V[X] and vm->V[Y];
+               break;
+
+            case 3:
+               vm->V[X] = vm->V[X] xor vm->V[Y];
+               break;
+
+            case 4:
+               if ((vm->V[X] + vm->V[Y]) > 255){
+                  vm->V[X] = vm->V[X] + vm->V[Y];
+                  vm->V[0xF] = 1;
+               } else {
+                  vm->V[X] = vm->V[X] + vm->V[Y];
+                  vm->V[0xF] = 0;
+               }
+               break;
+
+            case 5:
+               if(vm->V[X] > vm->V[Y]){
+                  vm->V[0xF] = 1;
+                  vm->V[X] = vm->V[X] - vm->V[Y];
+               } else {
+                  vm->V[0xF] = 0;
+                  vm->V[X] = vm->V[X] - vm->V[Y];
+               }
+               break;
+
+            case 6:
+               vm->V[0xF] = vm->V[X] & 0x01;
+               vm->V[X] >>= 1;
+               break;
+
+            case 7:
+               if(vm->V[Y] > vm->V[X]){
+                  vm->V[0xF] = 1;
+                  vm->V[X] = vm->V[Y] - vm->V[X];
+               } else {
+                  vm->V[0xF] = 0;
+                  vm->V[X] = vm->V[Y] - vm->V[X];
+               }
+               break;
+
+            case 0xE:
+               vm->V[0xF] = vm->V[X] >> 7;
+               vm->V[X] <<= 1;
+               break;
+            
+            default:
+               break;
+         }
+         break;
+
+      case 0xA:
          vm->I = NNN;
          break;
 
-      case 13:{
+      case 0xD:
          int coordenadaX = vm->V[X] & 63;
          int coordenadaY = vm->V[Y] & 31;
          vm->V[15] = 0;
@@ -98,7 +170,6 @@ void VM_ExecutarInstrucao(VM *vm){
                }
 
             }
-         }
          break;
       }
 
