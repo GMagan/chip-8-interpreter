@@ -8,6 +8,8 @@ typedef struct VM {
    uint16_t I;                // Registrador de índice
    uint16_t stack[16];        // Pilha
    uint8_t DISPLAY[64 * 32];  // Tela
+   uint8_t delay_timer;
+   uint8_t sound_timer;
 } VM;
 
 void VM_Inicializar(VM *vm, uint16_t pc_inicial);
