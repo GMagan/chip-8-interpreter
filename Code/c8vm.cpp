@@ -5,6 +5,10 @@
 void VM_Inicializar(VM *vm, uint16_t pc_inicial){
 
    vm->PC = pc_inicial;
+   vm->SP = 0;
+   vm->I = 0;
+   vm->delay_timer = 0;
+   vm->sound_timer = 0; 
 
 }
 
